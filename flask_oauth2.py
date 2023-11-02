@@ -8,10 +8,14 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", str(uuid.uuid4()))
 
 # This information is obtained upon registration of a new uaepass
-client_id = "sandbox_stage"
-client_secret = "sandbox_stage"
-authorization_base_url = "https://stg-id.uaepass.ae/idshub/authorize"
-token_url = "https://stg-id.uaepass.ae/idshub/token"
+client_id = os.environ.get("UAEPASS_CLIENT_ID", "sandbox_stage")
+client_secret = os.environ.get("UAEPASS_CLIENT_SECRET", "sandbox_stage")
+authorization_base_url = os.environ.get(
+    "UAEPASS_AUTHORIZATION_BASE_URL", "https://stg-id.uaepass.ae/idshub/authorize"
+)
+token_url = os.environ.get(
+    "UAEPASS_AUTHORIZATION_TOKEN_URL", "https://stg-id.uaepass.ae/idshub/token"
+)
 scope = "urn:uae:digitalid:profile:general"
 
 
@@ -22,7 +26,9 @@ def demo():
     Redirect the user/resource owner to the OAuth provider (i.e. uaepass)
     using an URL with a few key OAuth parameters.
     """
-    uaepass = OAuth2Session(client_id, redirect_uri=request.host, scope=scope)
+    uaepass = OAuth2Session(
+        client_id, redirect_uri="https://{}/profile".format(request.host), scope=scope
+    )
     authorization_url, state = uaepass.authorization_url(authorization_base_url)
 
     # State is used to prevent CSRF, keep this for later.
