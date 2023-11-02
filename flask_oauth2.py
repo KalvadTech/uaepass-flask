@@ -33,7 +33,7 @@ def demo():
 
     # State is used to prevent CSRF, keep this for later.
     session["oauth_state"] = state
-    return redirect(authorization_url)
+    return redirect(authorization_url+ "&acr_values=urn:safelayer:tws:policies:authentication:level:low")
 
 
 # Step 2: User authorization, this happens on the provider.
