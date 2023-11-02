@@ -1,0 +1,2 @@
+https://stg-id.uaepass.ae/idshub/authorize?response_type=code&client_id=sandbox_stage&redirect_uri=127.0.0.1%3A5000&scope=urn%3Auae%3Adigitalid%3Aprofile%3Ageneral&state=m96Z39QnQMGXEi80DEnB7JRvcpiZT5
+https://stg-id.uaepass.ae/idshub/authorize?response_type=code&client_id=sandbox_stage&scope=urn:uae:digitalid:profile:general&state=HnlHOJTkTb66Y5H&redirect_uri=https://stg-selfcare.uaepass.ae&acr_values=urn:safelayer:tws:policies:authentication:level:low 
