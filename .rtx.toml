@@ -1,0 +1,8 @@
+[env]
+# supports arbitrary env vars so rtx can be used like direnv/dotenv
+
+[tools]
+python = {version='3.12', virtualenv='env'}
+
+[settings] # project-local settings
+verbose = true
