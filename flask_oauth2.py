@@ -27,7 +27,7 @@ def demo():
     using an URL with a few key OAuth parameters.
     """
     uaepass = OAuth2Session(
-        client_id, redirect_uri="https://{}/profile".format(request.host), scope=scope
+        client_id, redirect_uri="https://{}/callback".format(request.host), scope=scope
     )
     authorization_url, state = uaepass.authorization_url(authorization_base_url)
 
@@ -47,7 +47,7 @@ def callback():
     callback URL. With this redirection comes an authorization code included
     in the redirect URL. We will use that to obtain an access token.
     """
-
+    print(request.url)
     uaepass = OAuth2Session(client_id, state=session["oauth_state"])
     token = uaepass.fetch_token(
         token_url, client_secret=client_secret, authorization_response=request.url
