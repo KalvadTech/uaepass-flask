@@ -58,7 +58,8 @@ def callback():
 
     querystring = {
         "grant_type": "authorization_code",
-        "redirect_uri": "https://{}/callback".format(request.host),
+        "redirect_uri": "https://stg-selfcare.uaepass.ae",
+        #"redirect_uri": "https://{}/callback".format(request.host),
         "code": code,
     }
     basic = HTTPBasicAuth(client_id, client_secret)
