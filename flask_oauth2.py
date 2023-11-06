@@ -65,6 +65,8 @@ def callback():
 
     response = requests.post(token_url, params=querystring, auth=basic)
     print(response.status_code)
+    if response.status_code != 200:
+        return response.text
     print(response.text)
     print(response.json())
 
