@@ -64,7 +64,8 @@ def callback():
     basic = HTTPBasicAuth(client_id, client_secret)
 
     response = requests.post(token_url, params=querystring, auth=basic)
-
+    print(response.status_code)
+    print(response.text)
     print(response.json())
 
     return redirect(
