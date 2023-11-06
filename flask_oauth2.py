@@ -3,6 +3,9 @@ from flask import Flask, request, redirect, session, url_for
 from flask.json import jsonify
 import os
 import uuid
+import requests
+import json
+from requests.auth import HTTPBasicAuth
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", str(uuid.uuid4()))
@@ -33,7 +36,10 @@ def demo():
 
     # State is used to prevent CSRF, keep this for later.
     session["oauth_state"] = state
-    return redirect(authorization_url+ "&acr_values=urn:safelayer:tws:policies:authentication:level:low")
+    return redirect(
+        authorization_url
+        + "&acr_values=urn:safelayer:tws:policies:authentication:level:low"
+    )
 
 
 # Step 2: User authorization, this happens on the provider.
@@ -47,18 +53,30 @@ def callback():
     callback URL. With this redirection comes an authorization code included
     in the redirect URL. We will use that to obtain an access token.
     """
-    print(request.url)
-    uaepass = OAuth2Session(client_id, state=session["oauth_state"])
-    token = uaepass.fetch_token(
-        token_url, client_secret=client_secret, authorization_response=request.url
+    code = request.args.get("code", default="", type=str)
+    state = request.args.get("state", default="", type=str)
+
+    querystring = {
+        "grant_type": "authorization_code",
+        "redirect_uri": "https://{}/callback".format(request.host),
+        "code": code,
+    }
+    basic = HTTPBasicAuth(client_id, client_secret)
+
+    response = requests.post(token_url, params=querystring, auth=basic)
+
+    print(response.json())
+
+    return redirect(
+        "/profile?access_token="
+        + response.json()["access_token"]
+        + "&scope="
+        + response.json()["scope"]
+        + "&token_type="
+        + response.json()["token_type"]
+        + "&expires_in="
+        + str(response.json()["expires_in"])
     )
-
-    # At this point you can fetch protected resources but lets save
-    # the token and show how this is done from a persisted token
-    # in /profile.
-    session["oauth_token"] = token
-
-    return redirect(url_for(".profile"))
 
 
 @app.route("/profile", methods=["GET"])
