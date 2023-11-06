@@ -1,4 +1,3 @@
-from requests_oauthlib import OAuth2Session
 from flask import Flask, request, redirect, session, url_for
 from flask.json import jsonify
 import os
@@ -22,44 +21,33 @@ token_url = os.environ.get(
 scope = "urn:uae:digitalid:profile:general"
 
 
-@app.route("/")
-def demo():
-    """Step 1: User Authorization.
-
-    Redirect the user/resource owner to the OAuth provider (i.e. uaepass)
-    using an URL with a few key OAuth parameters.
-    """
-    uaepass = OAuth2Session(
-        client_id, redirect_uri="https://{}/callback".format(request.host), scope=scope
+@app.route("/uaepass")
+def uaepass():
+    redirect_uri = "https://{}/callback".format(request.host)
+    state = str(uuid.uuid4())
+    user_type = request.args.get("user_type", default="resident", type=str)
+    if user_type == "visitor":
+        scope = "scope=urn:uae:digitalid:profile:general urn:uae:digitalid:profile:general:profileType urn:uae:digitalid:profile:general:unifiedId"
+    else:
+        scope = "urn:uae:digitalid:profile:general"
+    uaepass_redirect_url = "{}?response_type=code&client_id={}&scope={}&state={}&redirect_uri={}&acr_values=urn:safelayer:tws:policies:authentication:level:low".format(
+        authorization_base_url, client_id, scope, state, redirect_uri
     )
-    authorization_url, state = uaepass.authorization_url(authorization_base_url)
-
-    # State is used to prevent CSRF, keep this for later.
     session["oauth_state"] = state
     return redirect(
-        authorization_url
-        + "&acr_values=urn:safelayer:tws:policies:authentication:level:low"
+        uaepass_redirect_url,
+        code=302,
     )
-
-
-# Step 2: User authorization, this happens on the provider.
-
 
 @app.route("/callback", methods=["GET"])
 def callback():
-    """Step 3: Retrieving an access token.
-
-    The user has been redirected back from the provider to your registered
-    callback URL. With this redirection comes an authorization code included
-    in the redirect URL. We will use that to obtain an access token.
-    """
     code = request.args.get("code", default="", type=str)
     state = request.args.get("state", default="", type=str)
 
     querystring = {
         "grant_type": "authorization_code",
         "redirect_uri": "https://stg-selfcare.uaepass.ae",
-        #"redirect_uri": "https://{}/callback".format(request.host),
+        # "redirect_uri": "https://{}/callback".format(request.host),
         "code": code,
     }
     basic = HTTPBasicAuth(client_id, client_secret)
@@ -67,9 +55,7 @@ def callback():
     response = requests.post(token_url, params=querystring, auth=basic)
     print(response.status_code)
     if response.status_code != 200:
-        return response.text
-    print(response.text)
-    print(response.json())
+        return response.text, response.status_code
 
     return redirect(
         "/profile?access_token="
