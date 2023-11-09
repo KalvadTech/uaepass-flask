@@ -65,7 +65,6 @@ def callback():
     print(response.text)
     if response.status_code != 200:
         return response.text, response.status_code
-    session["oauth_token"] = (response.json()["access_token"], "")
     return redirect(
         "/profile?access_token="
         + response.json()["access_token"]
@@ -80,8 +79,9 @@ def callback():
 
 @app.route("/profile", methods=["GET"])
 def profile():
+    access_token = request.args.get("access_token", default="", type=str)
     headers = {
-        "Authorization": "Bearer {}".format(session["access_token"]),
+        "Authorization": "Bearer {}".format(access_token),
     }
     response = requests.get(userinfo_url, headers=headers)
     print(response.json())
