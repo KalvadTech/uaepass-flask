@@ -18,6 +18,9 @@ authorization_base_url = os.environ.get(
 token_url = os.environ.get(
     "UAEPASS_AUTHORIZATION_TOKEN_URL", "https://stg-id.uaepass.ae/idshub/token"
 )
+userinfo_url = os.environ.get(
+    "UAEPASS_USERINFO_URL", "https://stg-id.uaepass.ae/idshub/token"
+)
 scope = "urn:uae:digitalid:profile:general"
 
 
@@ -42,6 +45,7 @@ def uaepass():
 
 @app.route("/callback", methods=["GET"])
 def callback():
+    redirect_uri = "https://{}/profile".format(request.host)
     code = request.args.get("code", default="", type=str)
     state = request.args.get("state", default="", type=str)
     print(session["oauth_state"])
@@ -49,12 +53,10 @@ def callback():
     print(state)
     querystring = {
         "grant_type": "authorization_code",
-        "redirect_uri": "https://stg-selfcare.uaepass.ae",
+        "redirect_uri": redirect_uri,
         "code": code,
     }
-    headers = {
-        "Content-Type": "multipart/form-data"
-    }
+    headers = {"Content-Type": "multipart/form-data"}
     print(querystring)
     basic = HTTPBasicAuth(client_id, client_secret)
 
@@ -63,7 +65,7 @@ def callback():
     print(response.text)
     if response.status_code != 200:
         return response.text, response.status_code
-
+    session["oauth_token"] = (response.json()["access_token"], "")
     return redirect(
         "/profile?access_token="
         + response.json()["access_token"]
@@ -78,9 +80,13 @@ def callback():
 
 @app.route("/profile", methods=["GET"])
 def profile():
-    """Fetching a protected resource using an OAuth 2 token."""
-    uaepass = OAuth2Session(client_id, token=session["oauth_token"])
-    return jsonify(uaepass.get("https://stg-id.uaepass.ae/idshub/userinfo").json())
+    headers = {
+        "Authorization": "Bearer {}".format(session["access_token"]),
+    }
+    response = requests.get(userinfo_url, headers=headers)
+    print(response.json())
+
+    return jsonify(response.json())
 
 
 if __name__ == "__main__":
