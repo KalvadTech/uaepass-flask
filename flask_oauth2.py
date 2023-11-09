@@ -33,8 +33,9 @@ def uaepass():
         scope = "scope=urn:uae:digitalid:profile:general urn:uae:digitalid:profile:general:profileType urn:uae:digitalid:profile:general:unifiedId"
     else:
         scope = "urn:uae:digitalid:profile:general"
-    uaepass_redirect_url = "{}?response_type=code&client_id={}&scope={}&state={}&redirect_uri={}&acr_values=urn:safelayer:tws:policies:authentication:level:low".format(
-        authorization_base_url, client_id, scope, state, redirect_uri
+    acr_values = "urn:safelayer:tws:policies:authentication:level:low"
+    uaepass_redirect_url = "{}?response_type=code&client_id={}&scope={}&state={}&redirect_uri={}&acr_values={}".format(
+        authorization_base_url, client_id, scope, state, redirect_uri, acr_values
     )
     session["oauth_state"] = state
     return redirect(
@@ -45,36 +46,34 @@ def uaepass():
 
 @app.route("/callback", methods=["GET"])
 def callback():
-    redirect_uri = "https://{}/profile".format(request.host)
+    redirect_uri = "https://{}/callback".format(request.host)
     code = request.args.get("code", default="", type=str)
     state = request.args.get("state", default="", type=str)
-    print(session["oauth_state"])
-    print(code)
-    print(state)
-    querystring = {
-        "grant_type": "authorization_code",
-        "redirect_uri": redirect_uri,
-        "code": code,
-    }
-    headers = {"Content-Type": "multipart/form-data"}
-    print(querystring)
-    basic = HTTPBasicAuth(client_id, client_secret)
+    if code != "":
+        querystring = {
+            "grant_type": "authorization_code",
+            "redirect_uri": redirect_uri,
+            "code": code,
+        }
+        headers = {"Content-Type": "multipart/form-data; charset=UTF-8"}
+        print(querystring)
+        basic = HTTPBasicAuth(client_id, client_secret)
 
-    response = requests.post(token_url, params=querystring, auth=basic, headers=headers)
-    print(response.status_code)
-    print(response.text)
-    if response.status_code != 200:
-        return response.text, response.status_code
-    return redirect(
-        "/profile?access_token="
-        + response.json()["access_token"]
-        + "&scope="
-        + response.json()["scope"]
-        + "&token_type="
-        + response.json()["token_type"]
-        + "&expires_in="
-        + str(response.json()["expires_in"])
-    )
+        response = requests.post(token_url, params=querystring, auth=basic, headers=headers)
+        print(response.status_code)
+        print(response.text)
+        if response.status_code != 200:
+            return response.text, response.status_code
+        return redirect(
+            "/profile?access_token="
+            + response.json()["access_token"]
+            + "&scope="
+            + response.json()["scope"]
+            + "&token_type="
+            + response.json()["token_type"]
+            + "&expires_in="
+            + str(response.json()["expires_in"])
+        )
 
 
 @app.route("/profile", methods=["GET"])
