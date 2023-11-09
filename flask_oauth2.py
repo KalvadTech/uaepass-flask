@@ -52,10 +52,13 @@ def callback():
         "redirect_uri": "https://stg-selfcare.uaepass.ae",
         "code": code,
     }
+    headers = {
+        "Content-Type": "multipart/form-data"
+    }
     print(querystring)
     basic = HTTPBasicAuth(client_id, client_secret)
 
-    response = requests.post(token_url, params=querystring, auth=basic)
+    response = requests.post(token_url, params=querystring, auth=basic, headers=headers)
     print(response.status_code)
     print(response.text)
     if response.status_code != 200:
