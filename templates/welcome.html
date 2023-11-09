@@ -1,0 +1,39 @@
+{% extends 'base.html' %} {%block title %}Kalvad Emergency Service{% endblock %}
+{% block content %}
+<main class="container">
+    <header>
+        <h1>🚨 Welcome to Panic Button IT — Your First Responder for Tech Meltdowns! 🚨</h1>
+    </header>
+
+    <section>
+        <p>Ever felt like your computer’s plotting against you? Does your printer smell your fear? Here at Panic Button IT, we're the superhero team for your tech-related distress calls. No cape, just a bunch of tech-savvy humans with a knack for untangling wires and woes.</p>
+    </section>
+
+    <section id="services">
+        <h2>Our Services: No Tech Tragedy Too Tragic!</h2>
+        <ul>
+            <li><strong>The "Oops-I-Spilled-Coffee-On-My-Keyboard" Catastrophe</strong>: We've got the magic to bring your sticky keys back to life.</li>
+            <li><strong>The "Where-Did-My-File-Go" Vanishing Act</strong>: Our detectives will find your files and bring them home safely.</li>
+            <li><strong>The "Why-Is-My-Screen-Blue" Blues</strong>: We’ll turn that blue frown upside down in no time!</li>
+        </ul>
+    </section>
+
+    <section id="how-to">
+        <h2>Join the Fun! Here’s How:</h2>
+        <ol>
+            <li><strong>Hit the Panic Button</strong>: Sign up and tell us your tech tragedy.</li>
+            <li><strong>Chillax</strong>: Grab a snack and watch us do our thing.</li>
+            <li><strong>Back to Bliss</strong>: Before you can say "techpocalypse," you'll be back to business—or cat videos. No judgment.</li>
+        </ol>
+    </section>
+
+    <footer>
+        <p>So, what are you waiting for? Sign up today and experience the joy of a meltdown-free life (at least, when it comes to technology). Our team of merry tech elves is on standby, 24/7, ready to tackle your tech terrors with a smile (and maybe a few laughs).</p>
+        <p><strong>Panic Button IT</strong>: Because sometimes, the only way to fix it is to laugh (and then call the experts). 🛠️😄</p>
+        
+        <a href="/uaepass">
+            <img alt="UAEPass" src="{{ url_for('static', filename='uaepass.png') }}">
+        </a
+    </footer>
+</main>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{%block title %}Registration Complete - Panic Button IT{% endblock %}
+
+{% block content %}
+    <main class="container">
+      <header>
+        <h1>🎉 Congrats on Hitting the Panic Button! 🎉</h1>
+    </header>
+
+    <section>
+        <p>Thanks for entrusting your digital dramas to us. Your UAEPass login worked like a charm—no dark magic, we promise!</p>
+    </section>
+
+    <section id="user-info">
+        <h2>Here's the Scoop on You:</h2>
+        <p><strong>Full Name:</strong> <span id="user-name">{{content.fullnameEN}}</span></p>
+        <p><strong>Email:</strong> <span id="user-email">{{content.email}}</span></p>
+        <p><strong>Mobile:</strong> <span id="user-mobile">{{content.mobile}}</span></p>
+        <p><strong>Gender:</strong> <span id="user-gender">{{content.gender}}</span></p>
+        <p>We've securely fetched your details (not that we were snooping). This info will help us serve you better, faster, and with more flair!</p>
+    </section>
+
+    <section id="sign-off">
+        <h2>What Happens Next?</h2>
+        <p>Our team of tech wizards will be with you shortly—armed with screwdrivers and witty banter to make your tech woes vanish into thin air.</p>
+        <p><strong>Stay tuned:</strong> We’ll be in touch faster than you can say "Where's the 'any' key?"</p>
+    </section>
+
+    <footer>
+        <p>Got more questions? Our digital door is always open. Reach out any time—our customer service reps might even throw in a free joke with their advice. 🤖</p>
+        <p><strong>Panic Button IT</strong>: We're like a comfy blanket for your troubled gadgets.</p>
+    </footer>
+    </main>
+    {% endblock %}
