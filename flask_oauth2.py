@@ -19,7 +19,7 @@ token_url = os.environ.get(
     "UAEPASS_AUTHORIZATION_TOKEN_URL", "https://stg-id.uaepass.ae/idshub/token"
 )
 userinfo_url = os.environ.get(
-    "UAEPASS_USERINFO_URL", "https://stg-id.uaepass.ae/idshub/token"
+    "UAEPASS_USERINFO_URL", "https://stg-id.uaepass.ae/idshub/userinfo"
 )
 scope = "urn:uae:digitalid:profile:general"
 
@@ -59,7 +59,9 @@ def callback():
         print(querystring)
         basic = HTTPBasicAuth(client_id, client_secret)
 
-        response = requests.post(token_url, params=querystring, auth=basic, headers=headers)
+        response = requests.post(
+            token_url, params=querystring, auth=basic, headers=headers
+        )
         print(response.status_code)
         print(response.text)
         if response.status_code != 200:
