@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, session, url_for
+from flask import Flask, request, redirect, session, url_for, render_template
 from flask.json import jsonify
 import os
 import uuid
@@ -22,6 +22,11 @@ userinfo_url = os.environ.get(
     "UAEPASS_USERINFO_URL", "https://stg-id.uaepass.ae/idshub/userinfo"
 )
 scope = "urn:uae:digitalid:profile:general"
+
+
+@app.route("/")
+def welcome():
+    return render_template("welcome.html")
 
 
 @app.route("/uaepass")
@@ -86,8 +91,8 @@ def profile():
     }
     response = requests.get(userinfo_url, headers=headers)
     print(response.json())
-
-    return jsonify(response.json())
+    content = response.json()
+    return render_template("profile.html", content=content)
 
 
 if __name__ == "__main__":
