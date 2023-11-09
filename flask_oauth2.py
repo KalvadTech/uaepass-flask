@@ -39,21 +39,25 @@ def uaepass():
         code=302,
     )
 
+
 @app.route("/callback", methods=["GET"])
 def callback():
     code = request.args.get("code", default="", type=str)
     state = request.args.get("state", default="", type=str)
-
+    print(session["oauth_state"])
+    print(code)
+    print(state)
     querystring = {
         "grant_type": "authorization_code",
         "redirect_uri": "https://stg-selfcare.uaepass.ae",
-        # "redirect_uri": "https://{}/callback".format(request.host),
         "code": code,
     }
+    print(querystring)
     basic = HTTPBasicAuth(client_id, client_secret)
 
     response = requests.post(token_url, params=querystring, auth=basic)
     print(response.status_code)
+    print(response.text)
     if response.status_code != 200:
         return response.text, response.status_code
 
